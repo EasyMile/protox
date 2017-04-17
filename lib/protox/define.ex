@@ -59,17 +59,23 @@ defmodule Protox.Define do
       fields_by_name_map = make_fields_by_name_map(fields)
       encoder = Protox.DefineEncoder.define(fields, required_fields, syntax)
       default_fun = make_default_fun(fields)
+      json_encoder    = Protox.DefineJsonEncoder.define(fields)
 
       quote do
         defmodule unquote(msg_name) do
           @moduledoc false
 
           import Protox.Encode
+          import Protox.EncodeJson
+          @derive [Poison.Encoder]
 
           defstruct unquote(struct_fields)
 
           # Encoding function is generated for each message.
           unquote(encoder)
+
+          # Encoding JSON function is generated for each message.
+          unquote(json_encoder)
 
           @spec decode!(binary) :: struct | no_return
           def decode!(bytes) do

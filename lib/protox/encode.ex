@@ -1,6 +1,8 @@
 defmodule Protox.Encode do
   @moduledoc false
-  # Internal. Functions to encode types.
+  # Internal. Functions to encode types to protobuf.
+  # TODO. encode/1 is not internal
+
 
   import Protox.Guards
   use Bitwise

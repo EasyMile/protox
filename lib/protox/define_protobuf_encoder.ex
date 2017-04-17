@@ -1,4 +1,5 @@
 defmodule Protox.DefineEncoder do
+
   @moduledoc false
   # Internal. Generates the encoder of a message.
 
