@@ -50,32 +50,28 @@ defmodule Protox.Define do
   end
 
   defp define_messages(messages) do
-    for {msg_name, syntax, fields} <- messages do
-      unknown_fields = make_unknown_fields(:__uf__, fields)
-      struct_fields = make_struct_fields(fields, unknown_fields, syntax)
-      required_fields = make_required_fields(fields)
+    for {msg_name, syntax,fields} <- messages do
+
+      unknown_fields    = make_unknown_fields(:__uf__, fields)
+      struct_fields     = make_struct_fields(fields, unknown_fields, syntax)
+      required_fields   = make_required_fields(fields)
       required_fields_typesecs = make_required_fields_typespec(required_fields)
-      fields_map = make_fields_map(fields)
+      fields_map        = make_fields_map(fields)
       fields_by_name_map = make_fields_by_name_map(fields)
-      encoder = Protox.DefineEncoder.define(fields, required_fields, syntax)
+      encoder           = Protox.DefineEncoder.define(fields, required_fields, syntax)
       default_fun = make_default_fun(fields)
-      json_encoder    = Protox.DefineJsonEncoder.define(fields)
+      oneof_fields_keys = make_oneof_fields_keys(fields)
 
       quote do
         defmodule unquote(msg_name) do
           @moduledoc false
 
           import Protox.Encode
-          import Protox.EncodeJson
-          @derive [Poison.Encoder]
 
           defstruct unquote(struct_fields)
 
           # Encoding function is generated for each message.
           unquote(encoder)
-
-          # Encoding JSON function is generated for each message.
-          unquote(json_encoder)
 
           @spec decode!(binary) :: struct | no_return
           def decode!(bytes) do
@@ -113,6 +109,24 @@ defmodule Protox.Define do
           def syntax(), do: unquote(syntax)
 
           unquote(default_fun)
+        end
+
+        defimpl Poison.Encoder, for: unquote(msg_name) do
+          def encode(msg, options) do
+            Enum.reduce(unquote(oneof_fields_keys), msg, fn union_key, msg ->
+              union_value = Map.get(msg, union_key)
+              if union_value do
+                {key, value} = union_value
+                Map.put(msg, key, value)
+              else
+                msg
+              end
+              |> Map.delete(union_key)
+            end)
+            |> Map.delete(:__struct__)
+            |> Map.delete(unquote(unknown_fields))
+            |> Poison.Encoder.Map.encode(options)
+          end
         end
       end
     end
@@ -248,6 +262,11 @@ defmodule Protox.Define do
     |> Enum.reduce(%{}, fn {tag, _, name, kind, type}, acc ->
       Map.put(acc, name, {tag, kind, make_type_field(kind, type)})
     end)
+    |> Macro.escape()
+  end
+
+  defp make_oneof_fields_keys(fields) do
+    (for {_, _, _, {:oneof, key}, _} <- fields, into: MapSet.new(), do: key)
     |> Macro.escape()
   end
 

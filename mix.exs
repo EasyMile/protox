@@ -29,7 +29,8 @@ defmodule Protox.Mixfile do
       {:excoveralls, "~> 0.12", only: :test},
       {:ex_doc, "~> 0.22", only: [:dev]},
       {:inch_ex, "~> 2.0.0", only: :docs},
-      {:propcheck, "~> 1.2", only: [:test, :dev]}
+      {:propcheck, "~> 1.2", only: [:test, :dev]},
+      {:poison, "~> 4.0"}
     ]
   end
 

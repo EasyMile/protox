@@ -76,7 +76,7 @@ defmodule Bar do
 end
 ```
 
-In this case, the module `Namespace.Enum` is generated.
+In this case, the module `Namespace.Enum` will be generated.
 
 ## Specify import path
 
@@ -114,7 +114,7 @@ iex> %Fiz.Foo{a: 3, b: %{1 => %Fiz.Baz{}}} |> Protox.Encode.encode() |> :binary.
 <<8, 3, 18, 4, 8, 1, 18, 0>>
 ```
 
-## Decode
+Finally, here's how to decode:
 
 ```elixir
 iex> <<8, 3, 18, 4, 8, 1, 18, 0>> |> Fiz.Foo.decode()
@@ -126,7 +126,7 @@ iex> <<8, 3, 18, 4, 8, 1, 18, 0>> |> Fiz.Foo.decode()
 The `__uf__` field is explained in the section [Unknown fields](https://github.com/EasyMile/protox#unknown-fields).
 
 
-# Unknown Fields
+# Unknown fields
 
 If any unknown field is encountered when decoding, it is kept in the decoded message.
 It is possible to access them with the function `unknown_fields/1` defined with the message.
@@ -146,22 +146,22 @@ fields of the Protobuf message.
 This function returns a list of tuples `{tag, wire_type, bytes}`.
 
 
-# Unsupported Features
+# Unsupported features
 
-* Protobuf 3 JSON mapping
+* protobuf 3 JSON mapping
 * groups
 * rpc
 
 Furthermore, all options other than `packed` and `default` are ignored.
 
 
-# Implementation Choices
+# Implementation choices
 
-* Required fields (Protobuf 2): an error is raised when decoding a message with a missing required
+* Required fields (protobuf 2): an error is raised when decoding a message with a missing required
   field.
 
-* When decoding enum aliases, the last encountered constant is used.
-  For instance, in the following example, `:BAR` is always used if the value `1` is read
+* When decoding enum aliases, the last encountered constant will be used.
+  For instance, in the following example, `:BAR` will always be used if the value `1` is read
   on the wire.
   ```protobuf
   enum E {
@@ -206,7 +206,7 @@ Furthermore, all options other than `packed` and `default` are ignored.
   }
   ```
 
-# Types Mapping
+# Types mapping
 
 The following table shows how Protobuf types are mapped to Elixir ones.
 
