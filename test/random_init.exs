@@ -234,10 +234,10 @@ defmodule Protox.RandomInit do
   # ----------------------
 
   defp gen_float() do
-    oneof([integer(), :nan, :infinity, :"-infinity"])
+    integer()
   end
 
   defp gen_double() do
-    oneof([float(), :nan, :infinity, :"-infinity"])
+    float()
   end
 end

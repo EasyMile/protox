@@ -186,12 +186,12 @@ defmodule Protox.DecodeTest do
 
   test "Sub.i, infinity" do
     bytes = <<122, 8, 0, 0, 0, 0, 0, 0, 0xF0, 0x7F>>
-    assert Sub.decode!(bytes) == %Sub{i: [:infinity]}
+    assert Sub.decode!(bytes) == %Sub{i: [nil]}
   end
 
   test "Sub.i, -infinity" do
     bytes = <<122, 8, 0, 0, 0, 0, 0, 0, 0xF0, 0xFF>>
-    assert Sub.decode!(bytes) == %Sub{i: [:"-infinity"]}
+    assert Sub.decode!(bytes) == %Sub{i: [nil]}
   end
 
   test "Sub.i, nan" do
@@ -199,7 +199,7 @@ defmodule Protox.DecodeTest do
       <<122, 24, 0x01, 0, 0, 0, 0, 0, 0xF0, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
         0, 0, 0, 0, 0, 0, 0xF8, 0xFF>>
 
-    assert Sub.decode!(bytes) == %Sub{i: [:nan, :nan, :nan]}
+    assert Sub.decode!(bytes) == %Sub{i: [nil, nil, nil]}
   end
 
   test "Sub.h" do
@@ -634,7 +634,7 @@ defmodule Protox.DecodeTest do
              msg_f: nil,
              msg_g: [],
              msg_h: 0.0,
-             msg_i: [:infinity, :"-infinity"],
+             msg_i: [nil, nil],
              msg_j: [],
              msg_k: %{}
            }
@@ -649,7 +649,7 @@ defmodule Protox.DecodeTest do
              msg_f: nil,
              msg_g: [],
              msg_h: 0.0,
-             msg_i: [:nan, :nan, :nan],
+             msg_i: [nil, nil, nil],
              msg_j: [],
              msg_k: %{}
            }

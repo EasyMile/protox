@@ -64,14 +64,14 @@ defmodule Protox.Decode do
     get_unknown_varint_bytes(<<acc::binary, 1::1, b::7>>, rest)
   end
 
-  def parse_double(<<@positive_infinity_64, rest::binary>>), do: {:infinity, rest}
-  def parse_double(<<@negative_infinity_64, rest::binary>>), do: {:"-infinity", rest}
-  def parse_double(<<_::48, 0b1111::4, _::4, _::1, 0b1111111::7, rest::binary>>), do: {:nan, rest}
+  def parse_double(<<@positive_infinity_64, rest::binary>>), do: {nil, rest}
+  def parse_double(<<@negative_infinity_64, rest::binary>>), do: {nil, rest}
+  def parse_double(<<_::48, 0b1111::4, _::4, _::1, 0b1111111::7, rest::binary>>), do: {nil, rest}
   def parse_double(<<value::float-little-64, rest::binary>>), do: {value, rest}
 
-  def parse_float(<<@positive_infinity_32, rest::binary>>), do: {:infinity, rest}
-  def parse_float(<<@negative_infinity_32, rest::binary>>), do: {:"-infinity", rest}
-  def parse_float(<<_::16, 1::1, _::7, _::1, 0b1111111::7, rest::binary>>), do: {:nan, rest}
+  def parse_float(<<@positive_infinity_32, rest::binary>>), do: {nil, rest}
+  def parse_float(<<@negative_infinity_32, rest::binary>>), do: {nil, rest}
+  def parse_float(<<_::16, 1::1, _::7, _::1, 0b1111111::7, rest::binary>>), do: {nil, rest}
   def parse_float(<<value::float-little-32, rest::binary>>), do: {value, rest}
 
   def parse_sfixed64(<<value::signed-little-64, rest::binary>>), do: {value, rest}
