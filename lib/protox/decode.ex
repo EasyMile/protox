@@ -93,15 +93,15 @@ defmodule Protox.Decode do
 
   @spec parse_single(binary, atom) :: {any, binary}
   defp parse_single(<<@positive_infinity_64, rest::binary>>, :double) do
-    {:infinity, rest}
+    {nil, rest}
   end
 
   defp parse_single(<<@negative_infinity_64, rest::binary>>, :double) do
-    {:"-infinity", rest}
+    {nil, rest}
   end
 
   defp parse_single(<<_::48, 0b1111::4, _::4, _::1, 0b1111111::7, rest::binary>>, :double) do
-    {:nan, rest}
+    {nil, rest}
   end
 
   defp parse_single(<<value::float-little-64, rest::binary>>, :double) do
@@ -117,15 +117,15 @@ defmodule Protox.Decode do
   end
 
   defp parse_single(<<@positive_infinity_32, rest::binary>>, :float) do
-    {:infinity, rest}
+    {nil, rest}
   end
 
   defp parse_single(<<@negative_infinity_32, rest::binary>>, :float) do
-    {:"-infinity", rest}
+    {nil, rest}
   end
 
   defp parse_single(<<_::16, 1::1, _::7, _::1, 0b1111111::7, rest::binary>>, :float) do
-    {:nan, rest}
+    {nil, rest}
   end
 
   defp parse_single(<<value::float-little-32, rest::binary>>, :float) do
